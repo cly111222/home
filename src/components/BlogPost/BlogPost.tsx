@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -16,17 +16,22 @@ interface CodeProps {
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const post = blogPosts.find(post => post.id === id);
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   if (!post) {
     return (
       <div className="blog-post">
+        <button onClick={handleBack} className="back-button">
+          <span className="arrow">←</span>
+          返回
+        </button>
         <div className="post-header">
           <h1>文章未找到</h1>
-          <Link to="/" className="back-to-blog">
-            <span className="arrow">←</span>
-            返回首页
-          </Link>
         </div>
       </div>
     );
@@ -34,11 +39,22 @@ const BlogPost: React.FC = () => {
 
   return (
     <article className="blog-post">
+      <button onClick={handleBack} className="back-button">
+        <span className="arrow">←</span>
+        返回
+      </button>
+      
       <div className="post-header">
         <h1>{post.title}</h1>
         <div className="post-meta">
-          <span className="post-date">{post.date}</span>
-          <span className="post-category">{post.category}</span>
+          <span className="post-date">
+            <i className="far fa-calendar"></i>
+            {post.date}
+          </span>
+          <span className="post-category">
+            <i className="far fa-folder"></i>
+            {post.category}
+          </span>
         </div>
         <div className="post-tags">
           {post.tags.map(tag => (
@@ -73,13 +89,6 @@ const BlogPost: React.FC = () => {
         >
           {post.content}
         </ReactMarkdown>
-      </div>
-
-      <div className="post-footer">
-        <Link to="/#blog" className="back-to-blog">
-          <span className="arrow">←</span>
-          返回博客列表
-        </Link>
       </div>
     </article>
   );

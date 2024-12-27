@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ImageModal from '../ImageModal/ImageModal';
 import Loading from '../Loading/Loading';
 import './Gallery.styles.css';
@@ -17,8 +17,9 @@ interface GalleryItem {
 const Gallery: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<'photography' | 'paintings'>('photography');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const imageRefs = useRef<Map<string, HTMLImageElement>>(new Map());
 
   const galleryItems: GalleryItem[] = [
     // 摄影作品
@@ -180,29 +181,54 @@ const Gallery: React.FC = () => {
   const filteredItems = galleryItems.filter(item => item.category === activeCategory);
 
   useEffect(() => {
-    setIsLoading(true);
-    const currentItems = filteredItems;
+    // 重置加载状态
+    setLoadedImages(new Set());
     
-    // 预加载当前分类的所有图片
-    Promise.all(
-      currentItems.map(item => {
-        if (loadedImages.has(item.imageUrl)) {
-          return Promise.resolve();
-        }
-        return new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => {
-            setLoadedImages(prev => new Set([...prev, item.imageUrl]));
-            resolve(undefined);
-          };
-          img.onerror = () => resolve(undefined);
-          img.src = item.imageUrl;
+    // 创建新的 IntersectionObserver
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            const actualSrc = img.dataset.src;
+            if (actualSrc) {
+              // 创建一个新的图片对象来预加载
+              const tempImg = new Image();
+              tempImg.onload = () => {
+                if (img.parentElement) {
+                  img.src = actualSrc;
+                  img.classList.add('loaded');
+                  setLoadedImages(prev => new Set([...prev, actualSrc]));
+                }
+              };
+              tempImg.src = actualSrc;
+              // 停止观察这个元素
+              observerRef.current?.unobserve(img);
+            }
+          }
         });
-      })
-    ).then(() => {
-      setIsLoading(false);
+      },
+      {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+      }
+    );
+
+    // 观察所有图片元素
+    imageRefs.current.forEach((img) => {
+      if (observerRef.current) {
+        observerRef.current.observe(img);
+      }
     });
-  }, [activeCategory, loadedImages, filteredItems]);
+
+    // 清理函数
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [activeCategory]);
 
   const handleImageClick = (item: GalleryItem) => {
     if (loadedImages.has(item.imageUrl)) {
@@ -210,9 +236,11 @@ const Gallery: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  const setImageRef = (node: HTMLImageElement | null, imageUrl: string) => {
+    if (node) {
+      imageRefs.current.set(imageUrl, node);
+    }
+  };
 
   return (
     <section id="gallery" className="gallery-section">
@@ -241,11 +269,13 @@ const Gallery: React.FC = () => {
             onClick={() => handleImageClick(item)}
           >
             <div className="gallery-image-container">
+              <div className="image-placeholder" />
               <img
-                src={item.imageUrl}
+                ref={(node) => setImageRef(node, item.imageUrl)}
+                data-src={item.imageUrl}
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                 alt={item.title}
                 className="gallery-image"
-                loading="lazy"
               />
               <div className="gallery-item-overlay">
                 <h3>{item.title}</h3>

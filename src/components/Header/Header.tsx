@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Header.styles.css';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+
+  // 当路由变化时关闭菜单
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,7 +38,9 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <Link to="/" className="logo">LONG</Link>
+        <Link to="/" className="logo" onClick={closeMenu}>
+          LONG
+        </Link>
         
         <nav className="nav-links">
           {navLinks.map(link => (
@@ -47,18 +54,23 @@ const Header: React.FC = () => {
           ))}
         </nav>
 
-        <button className="menu-button" onClick={toggleMenu}>
-          <i className={`fas fa-${isMenuOpen ? 'times' : 'bars'}`}></i>
+        <button 
+          className="menu-button" 
+          onClick={toggleMenu}
+          aria-label={isMenuOpen ? '关闭菜单' : '打开菜单'}
+        >
+          {isMenuOpen ? '✕' : '☰'}
         </button>
       </div>
 
       <nav className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
-        {navLinks.map(link => (
+        {navLinks.map((link, index) => (
           <Link
             key={link.to}
             to={link.to}
             className={isActive(link.to) ? 'active' : ''}
             onClick={closeMenu}
+            style={{ '--i': index } as React.CSSProperties}
           >
             {link.text}
           </Link>
