@@ -1,0 +1,188 @@
+.tech-stack-section {
+  padding: 5rem 2rem;
+  background: var(--bg-gradient);
+}
+
+.tech-stack-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: var(--text-primary);
+}
+
+.tech-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tech-category {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.tech-category h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.skill-item {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.skill-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.skill-level {
+  width: 150px;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.skill-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.tech-roadmap {
+  max-width: 800px;
+  margin: 4rem auto 0;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.tech-roadmap h3 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.roadmap-timeline {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: var(--primary-color);
+  top: 0;
+}
+
+.timeline-item {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.timeline-date {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -10px;
+}
+
+.timeline-content {
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 300px;
+  margin-left: 2rem;
+  position: relative;
+}
+
+.timeline-content h4 {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-content p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.timeline-item:nth-child(odd) .timeline-content {
+  margin-left: 0;
+  margin-right: 2rem;
+}
+
+@media (max-width: 768px) {
+  .tech-stack-section {
+    padding: 3rem 1rem;
+  }
+
+  .tech-stack-section h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .tech-categories {
+    grid-template-columns: 1fr;
+  }
+
+  .roadmap-timeline::before {
+    left: 20px;
+  }
+
+  .timeline-item {
+    justify-content: flex-start;
+    margin-left: 40px;
+  }
+
+  .timeline-date {
+    left: 0;
+    transform: none;
+  }
+
+  .timeline-content {
+    margin-left: 1rem !important;
+    width: calc(100% - 60px);
+  }
+} 
