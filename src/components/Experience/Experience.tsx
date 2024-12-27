@@ -1,7 +1,7 @@
 import React from 'react';
 import './Experience.styles.css';
 
-interface Experience {
+interface ExperienceType {
   company: string;
   position: string;
   period: string;
@@ -10,7 +10,7 @@ interface Experience {
   technologies: string[];
 }
 
-const experiences: Experience[] = [
+const experiences: ExperienceType[] = [
   {
     company: "四川翻台宝科技有限公司",
     position: "中级Web前端工程师",

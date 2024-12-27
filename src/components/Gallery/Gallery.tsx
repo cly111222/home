@@ -202,7 +202,7 @@ const Gallery: React.FC = () => {
     ).then(() => {
       setIsLoading(false);
     });
-  }, [activeCategory, loadedImages]);
+  }, [activeCategory, loadedImages, filteredItems]);
 
   const handleImageClick = (item: GalleryItem) => {
     if (loadedImages.has(item.imageUrl)) {
