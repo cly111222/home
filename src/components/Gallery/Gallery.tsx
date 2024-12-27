@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ImageModal from '../ImageModal/ImageModal';
-import Loading from '../Loading/Loading';
 import './Gallery.styles.css';
 
 interface GalleryItem {
